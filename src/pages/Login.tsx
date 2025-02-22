@@ -6,6 +6,35 @@ import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const [role, setRole] = useState<"student" | "teacher" | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = role === "student" 
+      ? "http://0.0.0.0:8000/login/student" 
+      : "http://0.0.0.0:8000/login/teacher";
+    
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Login successful:", data);
+        localStorage.setItem("user", JSON.stringify(data)); 
+        window.location.href = role === "student" 
+          ? "/student-dashboard" 
+          : "/teacher-dashboard"; 
+      } else {
+        console.error("Login failed:", data);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-accent py-12 px-4 sm:px-6 lg:px-8">
@@ -38,7 +67,7 @@ const Login = () => {
               </Button>
             </div>
           ) : (
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address
@@ -46,6 +75,8 @@ const Login = () => {
                 <input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                   placeholder="Enter your email"
                 />
@@ -57,6 +88,8 @@ const Login = () => {
                 <input
                   id="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                   placeholder="Enter your password"
                 />

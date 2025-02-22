@@ -21,9 +21,9 @@ const sidebarLinks = [
     path: "/teacher-dashboard/notes"
   },
   {
-    title: "Generate Assignment",
+    title: "Create Assignment",
     icon: PlusSquare,
-    path: "/teacher-dashboard/generate-assignment"
+    path: "/teacher-dashboard/create-assignment"
   },
   {
     title: "Assignments",
